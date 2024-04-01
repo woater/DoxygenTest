@@ -21,7 +21,7 @@ jobs:
         run: doxygen docs/Doxyfile
         shell: bash
       - name: add sub module
-        run: touch .nojekyll && git add . && git cmm "commit html"
+        run: touch .nojekyll && git add . && git commit -m "commit html"
         working-directory: docs/html
       - name: set submodules
         run: git subtree split -P docs/html -b gh-pages
