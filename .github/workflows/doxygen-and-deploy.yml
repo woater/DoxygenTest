@@ -10,9 +10,23 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: DenverCoder1/doxygen-github-pages-action@v1.3.0
+      - name: Checkout repository
+        uses: actions/checkout@v2
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: gh-pages
-          folder: docs/html
-          config_file: docs/Doxyfile
+          submodules: "true"
+      - name: install doxygen
+        run: sudo apt-get install doxygen -y || sudo yum install doxygen -y
+        shell: bash
+      - name: make Doxygen output
+        run: doxygen docs/Doxyfile
+        shell: bash
+      - name: add sub module
+        run: touch .nojekyll && git add . && git cmm "commit html"
+        working-directory: docs/html
+      - name: set submodules
+        run: git subtree split -P docs/html -b gh-pages
+        shell: bash
+      - name: push html to gh-pages
+        run: git push origin gh-pages
+        working-directory: docs/html
+        
